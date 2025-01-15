@@ -51,14 +51,35 @@ const DEMO_GRAPH = {
 };
 
 // DEMO
-const { update } = createVisualizer(document.getElementById("root"), DEMO_GRAPH);
+const { update, getGraph } = createVisualizer(document.getElementById("root"), DEMO_GRAPH);
 
 /** The agent will call `getTools()` to see what tools it can use */
 agent.getTools = () => {
   /** You can define a tool like this */
-  const updateGraphTool = {
-    name: "updateGraph",
-    description: "Update the Azure Resource Graph",
+  const patchGraphTool = {
+    name: "patchGraph",
+    description: "Add new nodes or edges to the graph",
+    parameters: z.object({
+      nodes: z.array(z.object({ id: z.string(), type: z.string(), hasChildren: z.boolean().optional() })),
+      edges: z.array(z.object({ sourceId: z.string(), targetId: z.string() })),
+    }),
+    run: ({ nodes, edges }) => {
+      const currentGraph = getGraph();
+      const patched = {
+        nodes: [...currentGraph.nodes, ...nodes],
+        edges: [...currentGraph.edges, ...edges],
+      };
+
+      update(patched);
+
+      /* Give text feedback to the agent */
+      return `Graph updated`;
+    },
+  };
+
+  const generateNewGraphTool = {
+    name: "generateNewGraph",
+    description: "Generate a new graph",
     parameters: z.object({
       nodes: z.array(z.object({ id: z.string(), type: z.string(), hasChildren: z.boolean().optional() })),
       edges: z.array(z.object({ sourceId: z.string(), targetId: z.string() })),
@@ -67,12 +88,12 @@ agent.getTools = () => {
       update({ nodes, edges });
 
       /* Give text feedback to the agent */
-      return `Graph updated`;
+      return `Graph created`;
     },
   };
 
   /** In the end, show all the tools to the agent by returning them */
-  return [updateGraphTool];
+  return [patchGraphTool, generateNewGraphTool];
 };
 
 /** The agent will call `getState()` to see what the current state is, which can inform its tool use */
@@ -80,39 +101,35 @@ agent.getState = () => {
   /** Return a string that describes the current state */
   return `
 The current graph looks like this:
-${JSON.stringify(DEMO_GRAPH, null, 2)}
+${JSON.stringify(getGraph(), null, 2)}
       `;
 };
 
 agent.getHint = () =>
   `
-Generate an Azure deployment resource graph based on user's goal. 
+Build an Azure deployment resource graph based on user's goal. 
 
 Use the following syntax:
 
-// Group node
-{
+type GroupNode = {
   id: "<groupId>",
   type: "group"
   hasChildren: true,
 }
 
-// Item node
-{
+type ItemNode = {
   id: "<itemId>",
   type: "<itemType>",
 }
 
-// Item node inside a group
-{
+type NestedItemNode = {
   id: "<groupId>::<itemId>",
   type: "<itemType>",
 }
 
-// Edge: meaning targetNode depends on sourceNode
-{
-  sourceId: <sourceNodeId>,
-  targetId: <targetNodeId>
+type Edge = {
+  sourceId: "<sourceNodeId>",
+  targetId: "<targetNodeId>"
 }
 
 Requirement:
@@ -225,7 +242,8 @@ microsoft.cdn/service
 microsoft.unknown
 
 
-Now use the updateGraph to respond in this JSON format
+Now use the patchGraph to make incremental changes and use generateNewGraph for deletion or major changes.
+Respond in this JSON format
 {
   nodes: GroupNode|ItemNode|NestedItemNode[],
   edges: Edge[]

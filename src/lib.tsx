@@ -7,6 +7,8 @@ import { App, Graph } from "./visualizer/components/App";
 export function createVisualizer(container: HTMLElement, initialData: Graph) {
   const root = createRoot(container);
 
+  let currentGraph = initialData;
+
   root.render(
     <StrictMode>
       <App graph={initialData} />
@@ -14,6 +16,8 @@ export function createVisualizer(container: HTMLElement, initialData: Graph) {
   );
 
   const update = (newData: Graph) => {
+    currentGraph = newData;
+
     root.render(
       <StrictMode>
         <App graph={newData} />
@@ -22,8 +26,11 @@ export function createVisualizer(container: HTMLElement, initialData: Graph) {
   };
   const unmount = () => root.unmount();
 
+  const getGraph = () => currentGraph;
+
   return {
     update,
     unmount,
+    getGraph,
   };
 }
