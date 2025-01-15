@@ -1,6 +1,5 @@
 Generate an Azure deployment resource graph based on user's goal. 
 
-
 Use the following syntax:
 
 // Group node
