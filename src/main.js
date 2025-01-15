@@ -84,7 +84,7 @@ ${JSON.stringify(DEMO_GRAPH, null, 2)}
       `;
 };
 
-agent.getInstructions = () =>
+agent.getHint = () =>
   `
 Generate an Azure deployment resource graph based on user's goal. 
 
