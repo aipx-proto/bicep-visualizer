@@ -1,2 +1,3 @@
-# bicep-visualizer
-Bicep template visualization
+# Bicep Visualizer
+
+Unofficial Bicep template visualization tool
