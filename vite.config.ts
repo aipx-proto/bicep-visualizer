@@ -6,12 +6,12 @@ import { defineConfig } from "vite";
 export default defineConfig({
   base: "/bicep-visualizer/",
   plugins: [react()],
-  build: {
-    lib: {
-      entry: resolve(__dirname, "src/lib.tsx"),
-      name: "bicep-viz",
-      // the proper extensions will be added
-      fileName: "bicep-viz",
-    },
-  },
+  // build: {
+  //   lib: {
+  //     entry: resolve(__dirname, "src/lib.tsx"),
+  //     name: "bicep-viz",
+  //     // the proper extensions will be added
+  //     fileName: "bicep-viz",
+  //   },
+  // },
 });
