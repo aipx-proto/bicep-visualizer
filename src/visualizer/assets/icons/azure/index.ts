@@ -16,7 +16,7 @@ export async function importResourceIconInline(resourceType: string): Promise<st
   async function importRawSVGString() {
     switch (resourceType.toLowerCase()) {
       // Extensions
-      case "microsoft.cognitiveServices/search":
+      case "microsoft.cognitiveservices/search":
         return (await import("./_extension/cognitive-search.svg?raw")).default;
 
       // Microsoft.Compute
