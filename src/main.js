@@ -191,6 +191,7 @@ microsoft.botservice/botservices
 microsoft.cache/redis
 microsoft.cdn/service
 microsoft.cognitiveservices/accounts
+microsoft.cognitiveservices/search
 microsoft.compute/availabilitysets
 microsoft.compute/diskencryptionsets
 microsoft.compute/disks
@@ -281,7 +282,7 @@ microsoft.web/certificates
 microsoft.web/hostingenvironments
 microsoft.web/serverfarms
 microsoft.web/sites
-microsoft.unknown
+microsoft.custom
 
 Now use the patchGraph to make incremental changes and use generateNewGraph for major changes.
 `.trim();

@@ -15,6 +15,10 @@ export async function importResourceIconInline(resourceType: string): Promise<st
 
   async function importRawSVGString() {
     switch (resourceType.toLowerCase()) {
+      // Extensions
+      case "microsoft.cognitiveServices/search":
+        return (await import("./_extension/cognitive-search.svg?raw")).default;
+
       // Microsoft.Compute
       case "microsoft.compute/availabilitysets":
         return (await import("./compute/10025-icon-service-Availability-Sets.svg?raw")).default;
