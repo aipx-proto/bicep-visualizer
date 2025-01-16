@@ -1,7 +1,8 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 import cytoscape from "cytoscape";
-import { FC, memo, NamedExoticComponent, useCallback, useMemo, useRef } from "react";
+import { FC, memo, NamedExoticComponent, useCallback, useEffect, useMemo, useRef } from "react";
+import { debounceTime, Subject } from "rxjs";
 import styled, { DefaultTheme, withTheme } from "styled-components";
 import { useCytoscape } from "../../hooks";
 import { CommandBar } from "./CommandBar";
@@ -51,6 +52,8 @@ const GraphContainer = styled.div`
   background-position: 12px 12px;
 `;
 
+const resizeRequest$ = new Subject<void>();
+
 const GraphComponent: FC<GraphProps> = ({ elements, theme }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const styleSheet = useMemo(() => createStylesheet(theme), [theme]);
@@ -66,6 +69,29 @@ const GraphComponent: FC<GraphProps> = ({ elements, theme }) => {
       console.log(`[HACK]`, { filePath, range });
     }, []),
   });
+
+  // auto reset on window resize, use resize observer
+  useEffect(() => {
+    const handleResize = () => resizeRequest$.next();
+
+    const resizeObserver = new ResizeObserver(handleResize);
+    resizeObserver.observe(containerRef.current!);
+
+    return () => {
+      resizeObserver.disconnect();
+    };
+  }, []);
+
+  useEffect(() => {
+    const subscription = resizeRequest$.pipe(debounceTime(200)).subscribe(() => {
+      cytoscapeRef.current?.reset();
+      cytoscapeRef.current?.center();
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, []);
 
   const handleZoomIn = useCallback(() => {
     cytoscapeRef.current?.zoom(cytoscapeRef.current.zoom() + 0.1);
