@@ -32,16 +32,16 @@ const DEMO_GRAPH = {
   ],
   edges: [
     {
-      sourceId: "backend::azureIdentity",
-      targetId: "backend::azureCosmoDB",
+      sourceId: "backend::azureCosmoDB",
+      targetId: "backend::azureIdentity",
     },
     {
-      sourceId: "frontend::webApp",
-      targetId: "frontend::azureCDN",
+      sourceId: "frontend::azureCDN",
+      targetId: "frontend::webApp",
     },
     {
-      sourceId: "backend",
-      targetId: "frontend",
+      sourceId: "frontend",
+      targetId: "backend",
     },
   ],
 };
