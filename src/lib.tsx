@@ -16,7 +16,7 @@ export function createVisualizer(container: HTMLElement, initialData: Graph) {
   );
 
   const update = (newData: Graph) => {
-    currentGraph = newData;
+    currentGraph = { ...newData };
 
     root.render(
       <StrictMode>
