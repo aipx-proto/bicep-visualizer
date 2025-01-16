@@ -175,7 +175,8 @@ type Edge = {
 Requirement:
 1. <groupId> and <itemId> are lowerCamelCase
 2. <itemType> must be one of the following:
-3. No loops. No edge between group and its children. DAG only.
+3. Edge means source depends on target
+4. No loops. No edge between group and its children. DAG only.
 
 microsoft.aad/domainservices
 microsoft.analysisservices/servers
